@@ -69,10 +69,28 @@ img {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  transition: all 0.5s;
 }
 
-.dragNdrop.wrong {
-  transition: all 0.5s;
+.animate-drop {
+  transition: all 0.5s ease-out;
+  animation: drop .5s;
+}
+
+@keyframes drop {
+  0% {
+    opacity: 1;
+    /* transform: scale(1); */
+  }
+
+  /* 50% {
+    opacity: 0;
+  } */
+  
+  100% {
+    opacity: 0;
+    /* transform: scale(0); */
+  }
 }
 
 .drop-here {
