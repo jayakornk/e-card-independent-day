@@ -1,6 +1,64 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css?family=Nunito:400|Oswald:500&display=swap');
+
+h1 ,h2 ,h3 ,h4 ,h5 ,h6 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  line-height: 1.41;
+  color: #1C5295;
+}
+p {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.41;
+  color: #707070;
+}
+h1 {
+  font-size: 34px;
+}
+
+
+/* Body */
+
+body {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.text-center {
+  text-align: center;
+}
+/* Header */
+.top-header {
+  background-color: #1C5295;
+  width: 100%;
+}
+.top-header > img {
+  margin: 0 auto;
+  display: block;
+}
+.bottom-header {
+  text-align: center;
+  background: url(img/header-redbar.png) repeat center center;
+}
+.bottom-header .tagline {
+  background-color: #CF1D1D;
+  padding: 5px 15px 2px;
+  width: 100%;
+  max-width: 230px;
+  display: block;
+  margin: 0px auto;
+}
+
+/* Dropzone */
 .container {
   width: 100%;
-  max-width: 1170px;
+  max-width: 720px;
   min-height: 98vh;
   margin: 0 auto;
   position: relative;
@@ -34,4 +92,14 @@
 
 .activated {
   background-color: #29e;
+}
+
+/* Footer */
+
+.main-footer {
+  text-align: center;
+  padding: 5px;
+}
+.main-footer .footer-logo {
+  margin: 5px auto;
 }
