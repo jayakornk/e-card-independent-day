@@ -36,7 +36,7 @@ interact('.drop-here')
     ondragleave: function (event) {
       const target = event.target;
       const text = target.querySelector('.drop-here-text');
-
+      
       target.classList.remove('activate');
       animateRemoveScale(text);
     },
@@ -47,26 +47,40 @@ interact('.drop-here')
 
       animateAddScale(related);
       animateAddScale(text);
-
-      target.classList.add('dropped');
+      
       
       if (!related.getAttribute('data-true')) {
+        related.classList.add('animate-drop');
+        target.classList.add('dropped-false');
         text.innerHTML = 'Try Again!';
         setTimeout(function() {
           animateRemoveScale(related);
           animateRemoveScale(text);
         }, 300);
+        setTimeout(function() {
+          related.classList.remove('animate-drop');
+          target.classList.remove('dropped-false');
+          target.classList.remove('dropped-true');
+        }, 1050);
+      } else {
+        // related.removeEventListener('mouseover');
+        // related.removeEventListener('mouseleave');
+        target.classList.add('dropped-true');
+        animateRemoveScale(related);
+        animateAddScale(related, 1.6);
+        related.classList.add('target-true');
+        related.style.pointerEvents = 'none';
       }
       
-      related.classList.add('animate-drop');
       
-      setTimeout(function() {
-        related.classList.remove('animate-drop');
-        target.classList.remove('dropped');
-      }, 1050);
     },
     ondropdeactivate: function (event) {
-      event.target.classList.remove('activate');
+      const related = event.relatedTarget;
+      const target = event.currentTarget;
+
+      if (!related.getAttribute('data-true')) {
+        target.classList.remove('activate');
+      }
     },
   })
 

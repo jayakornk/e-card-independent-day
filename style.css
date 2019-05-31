@@ -117,14 +117,12 @@ img {
   transform: translate(-50%, -50%) scale(1.53);
 }
 
-.dropped {
-  /* animation: dropped 1s .15s ease-in-out; */
-  animation-name: dropped;
-  /* animation-delay: .3s; */
+.dropped-false {
+  animation-name: dropped-false;
   animation-duration: .75s;
 }
 
-@keyframes dropped {
+@keyframes dropped-false {
   0% {
     transform: translate(-50%, -50%) scale(1.53);
   }
@@ -136,6 +134,40 @@ img {
   }
   100% {
     transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.dropped-true {
+  animation-name: dropped-true;
+  animation-duration: .75s;
+}
+
+@keyframes dropped-true {
+  0% {
+    transform: translate(-50%, -50%) scale(1.53);
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.53);
+  }
+}
+
+.target-true {
+  animation-name: target-true;
+  animation-duration: .75s;
+}
+
+@keyframes target-true {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
   }
 }
 
