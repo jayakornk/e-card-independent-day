@@ -15,16 +15,44 @@ interact('.drop-here')
     accept: '.dragNdrop',
     overlap: 0.75,
     ondragenter: function (event) {
-      event.target.classList.add('activate');
+      const target = event.target;
+      const text = target.querySelector('.drop-here-text');
+      let scale = 0;
+
+      target.classList.add('activate');
+      text.style.transform += 'scale(' + scale + ')';
     },
     ondragleave: function (event) {
-      event.target.classList.remove('activate');
+      const target = event.target;
+      const text = target.querySelector('.drop-here-text');
+      const re = /(scale)\((.*)\)/g;
+
+      target.classList.remove('activate');
+      text.style.transform = text.style.transform.replace(re, '');
     },
     ondrop: function (event) {
       const related = event.relatedTarget;
+      const target = event.currentTarget;
+      
+      const text = target.querySelector('.drop-here-text');
 
+      const re = /(scale)\((.*)\)/g;
+      let scale = 0;
+      if (!related.style.transform.match(re)) {
+        related.style.transform += 'scale(' + scale + ')';
+        text.style.transform += 'scale(' + scale + ')';
+      }
+      
+      if (!related.getAttribute('data-true')) {
+        text.innerHTML = 'Try Again!';
+        setTimeout(function() {
+          related.style.transform = related.style.transform.replace(re, '');
+          text.style.transform = text.style.transform.replace(re, '');
+        }, 300);
+      }
+      
       related.classList.add('animate-drop');
-
+      
       setTimeout(function() {
         related.classList.remove('animate-drop');
       }, 1050);
@@ -42,7 +70,6 @@ Object.keys(scenes.scene0).forEach((key, index) => {
   el = parser.parseFromString(el, "image/svg+xml").documentElement;
   el.classList.add('dragNdrop');
 
-  el.style.webkitTransform = 'translate(calc(-50% + ' + arr[index].x + 'px), calc(-50% + ' + arr[index].y + 'px))';
   el.style.transform = 'translate(calc(-50% + ' + arr[index].x + 'px), calc(-50% + ' + arr[index].y + 'px))';
   el.setAttribute('data-x', arr[index].x);
   el.setAttribute('data-y', arr[index].y);
@@ -55,14 +82,12 @@ Object.keys(scenes.scene0).forEach((key, index) => {
   el.addEventListener('mouseover', function(event) {
     const re = /(scale)\((.*)\)/g;
     let scale = 1.2;
-    if (!el.style.webkitTransform.match(re)) {
-      el.style.webkitTransform += 'scale(1.2)';
+    if (!el.style.transform.match(re)) {
       el.style.transform += 'scale(1.2)';
     }
   });
   el.addEventListener('mouseleave', function(event) {
     const re = /(scale)(\(.*\))/g;
-    el.style.webkitTransform = el.style.transform.replace(re, '');
     el.style.transform = el.style.transform.replace(re, '');
   });
   
@@ -76,7 +101,7 @@ Object.keys(scenes.scene0).forEach((key, index) => {
           {
             x: container.offsetLeft + dropzone.offsetLeft,
             y: container.offsetTop + dropzone.offsetTop,
-            range: 200,
+            range: 100,
           },
           {
             x: arr[index].x,
@@ -92,23 +117,24 @@ Object.keys(scenes.scene0).forEach((key, index) => {
       onmove: dragMoveListener,
       onend: function(event) {
         event.target.style.transition = event.target.style.transition.replace(/(all 0s ease 0s)/, '');
-        if (!event.relatedTarget || (event.relatedTarget && !event.relatedTarget.classList.contains('drop-here')) && event.target.getAttribute('data-true') === 'true') {
-          const oriX = event.target.getAttribute('data-ori-x');
-          const oriY = event.target.getAttribute('data-ori-y');
-          event.target.style.webkitTransform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
-          event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
-          event.target.setAttribute('data-x', oriX);
-          event.target.setAttribute('data-y', oriY);
-        }
 
-        if (event.target.getAttribute('data-true') !== 'true') {
-          const oriX = event.target.getAttribute('data-ori-x');
-          const oriY = event.target.getAttribute('data-ori-y');
-          event.target.style.webkitTransform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
-          event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
-          event.target.setAttribute('data-x', oriX);
-          event.target.setAttribute('data-y', oriY);
-        }
+        setTimeout(function() {
+          if (!event.relatedTarget || (event.relatedTarget && !event.relatedTarget.classList.contains('drop-here')) && event.target.getAttribute('data-true') === 'true') {
+            const oriX = event.target.getAttribute('data-ori-x');
+            const oriY = event.target.getAttribute('data-ori-y');
+            event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
+            event.target.setAttribute('data-x', oriX);
+            event.target.setAttribute('data-y', oriY);
+          }
+
+          if (event.target.getAttribute('data-true') !== 'true') {
+            const oriX = event.target.getAttribute('data-ori-x');
+            const oriY = event.target.getAttribute('data-ori-y');
+            event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
+            event.target.setAttribute('data-x', oriX);
+            event.target.setAttribute('data-y', oriY);
+          }
+        }, 320);
       }
     });
 });
@@ -119,9 +145,7 @@ function dragMoveListener (event) {
       y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
     target.style.transition = '0s';
 
-  target.style.webkitTransform =
-  target.style.transform =
-    'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px)';
+  target.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px)';
   target.setAttribute('data-x', x);
   target.setAttribute('data-y', y);
 }

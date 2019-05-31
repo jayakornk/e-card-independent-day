@@ -1,5 +1,5 @@
 /* Fonts */
-@import url('https://fonts.googleapis.com/css?family=Nunito:400|Oswald:500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Nunito:400|Oswald:500|Barlow:400,700&display=swap');
 
 h1 ,h2 ,h3 ,h4 ,h5 ,h6 {
   font-family: 'Oswald', sans-serif;
@@ -7,7 +7,7 @@ h1 ,h2 ,h3 ,h4 ,h5 ,h6 {
   line-height: 1.41;
   color: #1C5295;
 }
-p {
+body, p {
   font-family: 'Nunito', sans-serif;
   font-weight: 400;
   font-size: 18px;
@@ -69,12 +69,12 @@ img {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  transition: all 0.5s;
+  transition: all 0.3s;
 }
 
 .animate-drop {
-  transition: all 0.5s ease-out;
-  animation: drop .5s;
+  transition: all 0.3s ease-out;
+  animation: drop .3s;
 }
 
 @keyframes drop {
@@ -98,14 +98,30 @@ img {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #dcdcdc;
+  background-color: #1C5295;
   width: 150px;
   height: 150px;
   border-radius: 50%;
+  transition: .3s;
+  text-align: center;
+}
+
+.drop-here-text {
+  color: #fff;
+  font-family: 'Barlow', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transition: .3s;
 }
 
 .activate {
-  background-color: #4e4;
+  background-color: #CF1D1D;
+  transform: translate(-50%, -50%) scale(1.53);
 }
 
 .activated {
