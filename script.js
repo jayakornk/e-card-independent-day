@@ -10,44 +10,51 @@ const arr = [
   {x: '150', y: '150'},
 ];
 
+function animateAddScale(el, scale = 0) {
+  const re = /(scale)\((.*)\)/g;
+  if (!el.style.transform.match(re)) {
+    el.style.transform += 'scale(' + scale + ')';
+  }
+}
+
+function animateRemoveScale(el) {
+  const re = /(scale)\((.*)\)/g;
+  el.style.transform = el.style.transform.replace(re, '');
+}
+
 interact('.drop-here')
   .dropzone({
     accept: '.dragNdrop',
-    overlap: 0.75,
+    overlap: 0.9,
     ondragenter: function (event) {
       const target = event.target;
       const text = target.querySelector('.drop-here-text');
-      let scale = 0;
 
       target.classList.add('activate');
-      text.style.transform += 'scale(' + scale + ')';
+      animateAddScale(text);
     },
     ondragleave: function (event) {
       const target = event.target;
       const text = target.querySelector('.drop-here-text');
-      const re = /(scale)\((.*)\)/g;
 
       target.classList.remove('activate');
-      text.style.transform = text.style.transform.replace(re, '');
+      animateRemoveScale(text);
     },
     ondrop: function (event) {
       const related = event.relatedTarget;
       const target = event.currentTarget;
-      
       const text = target.querySelector('.drop-here-text');
 
-      const re = /(scale)\((.*)\)/g;
-      let scale = 0;
-      if (!related.style.transform.match(re)) {
-        related.style.transform += 'scale(' + scale + ')';
-        text.style.transform += 'scale(' + scale + ')';
-      }
+      animateAddScale(related);
+      animateAddScale(text);
+
+      target.classList.add('dropped');
       
       if (!related.getAttribute('data-true')) {
         text.innerHTML = 'Try Again!';
         setTimeout(function() {
-          related.style.transform = related.style.transform.replace(re, '');
-          text.style.transform = text.style.transform.replace(re, '');
+          animateRemoveScale(related);
+          animateRemoveScale(text);
         }, 300);
       }
       
@@ -55,6 +62,7 @@ interact('.drop-here')
       
       setTimeout(function() {
         related.classList.remove('animate-drop');
+        target.classList.remove('dropped');
       }, 1050);
     },
     ondropdeactivate: function (event) {
@@ -80,15 +88,11 @@ Object.keys(scenes.scene0).forEach((key, index) => {
   }
 
   el.addEventListener('mouseover', function(event) {
-    const re = /(scale)\((.*)\)/g;
     let scale = 1.2;
-    if (!el.style.transform.match(re)) {
-      el.style.transform += 'scale(1.2)';
-    }
+    animateAddScale(el, 1.2);
   });
   el.addEventListener('mouseleave', function(event) {
-    const re = /(scale)(\(.*\))/g;
-    el.style.transform = el.style.transform.replace(re, '');
+    animateRemoveScale(el);
   });
   
   container.appendChild(el);
