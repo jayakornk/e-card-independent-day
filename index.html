@@ -18,22 +18,26 @@
       </div>
     </header>
     <div class="container">
-      <h1 id="question-text" class="text-center">What time does Gatlinburg, Tennessee celebrate the Fourth of July?</h1>
-      <img class="firework" src="img/firework.svg">
-      <div class="drop-here"><strong class="drop-here-text" style="transform: translateY(-50%);">Drop Here!</strong></div>
-      <p id="desc-text" class="text-center">The people of Gatlinburg are the very first to celebrate, with their Midnight Parade starting at 12:01 am!</p>
+      <h1 id="question-text" class="text-center"></h1>
+      <div class="interactive-container">
+        <img class="firework" src="img/firework.svg">
+        <div class="drop-here"><strong class="drop-here-text" style="transform: translateY(-50%);">Drop Here!</strong></div>
+      </div>
+      <p id="answer-text" class="text-center"></p>
+      <footer class="main-footer">
+        <img src="img/btn-back.svg" class="btn-direction back" data-current-scene="0">
+        <img src="img/logo.svg" class="footer-logo">
+        <img src="img/btn-next.svg" class="btn-direction next" data-current-scene="0">
+      </footer>
     </div>
-  <footer class="main-footer">
-      <img src="img/logo.svg" class="footer-logo">
-  </footer>
-  <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"
-  ></script>
-  <script src="svg.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-  <script src="script.js"></script>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"
+    ></script>
+    <script src="svg.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

@@ -68,12 +68,19 @@ img {
   position: relative;
 }
 
+.interactive-container {
+  position: relative;
+  height: 380px;
+}
+
 .dragNdrop {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   transition: all 0.3s;
+  width: 150px;
+  height: auto;
 }
 
 .animate-drop {
@@ -169,6 +176,7 @@ img {
 
 .target-true {
   animation: target-true .75s, after-target-true .25s .75s;
+  transform: translate(-50%, -50%) scale(1.3) !important;
   z-index: 3;
 }
 
@@ -234,12 +242,48 @@ img {
   }
 }
 
+[id="answer-text"] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all .5s .75s;
+}
+
+.show-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hide-not-true {
+  opacity: 0;
+}
+
 /* Footer */
 
 .main-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   text-align: center;
   padding: 5px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 .main-footer .footer-logo {
   margin: 5px auto;
+  width: 100%;
+  max-width: 115px;
+  height: auto;
+}
+.btn-direction {
+  cursor: pointer;
+  height: 18px;
+  width: auto;
+  transition: all .3s;
+}
+.btn-direction:hover {
+  opacity: .8;
+}
+.btn-direction.back[data-current-scene="0"] {
+  visibility: hidden;
 }

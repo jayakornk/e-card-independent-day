@@ -3,13 +3,6 @@
 let startPos = null;
 var parser = new DOMParser();
 
-const arr = [
-  {x: '-150', y: '-150'},
-  {x: '150', y: '-150'},
-  {x: '-150', y: '150'},
-  {x: '150', y: '150'},
-];
-
 function animateAddScale(el, scale = 0) {
   const re = /(scale)\((.*)\)/g;
   if (!el.style.transform.match(re)) {
@@ -25,7 +18,7 @@ function animateRemoveScale(el) {
 interact('.drop-here')
   .dropzone({
     accept: '.dragNdrop',
-    overlap: 0.9,
+    overlap: 0.65,
     ondragenter: function (event) {
       const target = event.target;
       const text = target.querySelector('.drop-here-text');
@@ -71,6 +64,10 @@ interact('.drop-here')
         related.classList.add('target-true');
         related.style.pointerEvents = 'none';
         document.querySelector('.firework').classList.add('firework-animate');
+        document.querySelector('[id="answer-text"]').classList.add('show-text');
+        document.querySelectorAll('.interactive-container svg:not([data-true])').forEach(function(element) {
+          element.classList.add('hide-not-true');
+        });
       }
       
       
@@ -83,80 +80,7 @@ interact('.drop-here')
         target.classList.remove('activate');
       }
     },
-  })
-
-Object.keys(scenes.scene0).forEach((key, index) => {
-  const container = document.querySelector('.container');
-  const dropzone = document.querySelector('.drop-here');
-
-  let el = scenes.scene0[key];
-  el = parser.parseFromString(el, "image/svg+xml").documentElement;
-  el.classList.add('dragNdrop');
-
-  el.style.transform = 'translate(calc(-50% + ' + arr[index].x + 'px), calc(-50% + ' + arr[index].y + 'px))';
-  el.setAttribute('data-x', arr[index].x);
-  el.setAttribute('data-y', arr[index].y);
-  el.setAttribute('data-ori-x', arr[index].x);
-  el.setAttribute('data-ori-y', arr[index].y);
-  if (key === 't') {
-    el.setAttribute('data-true', 'true');
-  }
-
-  el.addEventListener('mouseover', function(event) {
-    let scale = 1.2;
-    animateAddScale(el, 1.2);
   });
-  el.addEventListener('mouseleave', function(event) {
-    animateRemoveScale(el);
-  });
-  
-  container.appendChild(el);
-
-  interact(el)
-    .draggable({
-      inertia: true,
-      snap: {
-        targets: [
-          {
-            x: container.offsetLeft + dropzone.offsetLeft,
-            y: container.offsetTop + dropzone.offsetTop,
-            range: 100,
-          },
-          {
-            x: arr[index].x,
-            y: arr[index].y,
-            range: Infinity,
-          },
-        ],
-        relativePoints: [
-          { x: 0.5, y: 0.5 },
-        ],
-        endOnly: true,
-      },
-      onmove: dragMoveListener,
-      onend: function(event) {
-        event.target.style.transition = event.target.style.transition.replace(/(all 0s ease 0s)/, '');
-
-        setTimeout(function() {
-          if (!event.relatedTarget || (event.relatedTarget && !event.relatedTarget.classList.contains('drop-here')) && event.target.getAttribute('data-true') === 'true') {
-            const oriX = event.target.getAttribute('data-ori-x');
-            const oriY = event.target.getAttribute('data-ori-y');
-            event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
-            event.target.setAttribute('data-x', oriX);
-            event.target.setAttribute('data-y', oriY);
-          }
-
-          if (event.target.getAttribute('data-true') !== 'true') {
-            const oriX = event.target.getAttribute('data-ori-x');
-            const oriY = event.target.getAttribute('data-ori-y');
-            event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
-            event.target.setAttribute('data-x', oriX);
-            event.target.setAttribute('data-y', oriY);
-          }
-        }, 320);
-      }
-    });
-});
 
 function dragMoveListener (event) {
   var target = event.target,
@@ -167,6 +91,124 @@ function dragMoveListener (event) {
   target.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px)';
   target.setAttribute('data-x', x);
   target.setAttribute('data-y', y);
+}
+
+function initScene(scene) {
+  const currentSceneKey = 'scene' + scene;
+  const currentScene = scenes[currentSceneKey];
+
+  loopSVG(currentScene);
+
+  const q = document.querySelector('[id="question-text"]');
+  const a = document.querySelector('[id="answer-text"]');
+
+  q.innerHTML = currentScene.q;
+  a.innerHTML = currentScene.a;
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', function() {
+  initScene(0);
+});
+
+const next = document.querySelector('.btn-direction.next');
+const back = document.querySelector('.btn-direction.back');
+
+next.addEventListener('click', function(e) {
+  let nextScene = parseInt(this.dataset.currentScene) + 1;
+  initScene(nextScene);
+  this.dataset.currentScene = nextScene;
+  back.dataset.currentScene = nextScene;
+});
+
+back.addEventListener('click', function(e) {
+  let nextScene = parseInt(this.dataset.currentScene) - 1;
+  initScene(nextScene);
+  this.dataset.currentScene = nextScene;
+  next.dataset.currentScene = nextScene;
+});
+
+function loopSVG(currentScene) {
+  const arr = [
+    {x: '-150', y: '-120'},
+    {x: '150', y: '-120'},
+    {x: '-150', y: '120'},
+    {x: '150', y: '120'},
+  ];
+  Object.keys(currentScene).forEach((key, index) => {
+    if ( key !== 'q' && key !== 'a') {
+      const container = document.querySelector('.interactive-container');
+      const dropzone = document.querySelector('.drop-here');
+
+      let el = currentScene[key];
+      el = parser.parseFromString(el, "image/svg+xml").documentElement;
+      el.classList.add('dragNdrop');
+
+      el.style.transform = 'translate(calc(-50% + ' + arr[index].x + 'px), calc(-50% + ' + arr[index].y + 'px))';
+      el.setAttribute('data-x', arr[index].x);
+      el.setAttribute('data-y', arr[index].y);
+      el.setAttribute('data-ori-x', arr[index].x);
+      el.setAttribute('data-ori-y', arr[index].y);
+      if (key === 't') {
+        el.setAttribute('data-true', 'true');
+      }
+
+      el.addEventListener('mouseover', function(event) {
+        let scale = 1.2;
+        animateAddScale(el, 1.2);
+      });
+      el.addEventListener('mouseleave', function(event) {
+        animateRemoveScale(el);
+      });
+
+      container.appendChild(el);
+
+      interact(el)
+        .draggable({
+          inertia: true,
+          snap: {
+            targets: [
+              {
+                x: container.offsetLeft + dropzone.offsetLeft,
+                y: container.offsetTop + dropzone.offsetTop,
+                range: 100,
+              },
+              {
+                x: arr[index].x,
+                y: arr[index].y,
+                range: Infinity,
+              },
+            ],
+            relativePoints: [
+              { x: 0.5, y: 0.5 },
+            ],
+            endOnly: true,
+          },
+          onmove: dragMoveListener,
+          onend: function(event) {
+            event.target.style.transition = event.target.style.transition.replace(/(all 0s ease 0s)/, '');
+    
+            setTimeout(function() {
+              if (!event.relatedTarget || (event.relatedTarget && !event.relatedTarget.classList.contains('drop-here')) && event.target.getAttribute('data-true') === 'true') {
+                const oriX = event.target.getAttribute('data-ori-x');
+                const oriY = event.target.getAttribute('data-ori-y');
+                event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
+                event.target.setAttribute('data-x', oriX);
+                event.target.setAttribute('data-y', oriY);
+              }
+    
+              if (event.target.getAttribute('data-true') !== 'true') {
+                const oriX = event.target.getAttribute('data-ori-x');
+                const oriY = event.target.getAttribute('data-ori-y');
+                event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
+                event.target.setAttribute('data-x', oriX);
+                event.target.setAttribute('data-y', oriY);
+              }
+            }, 320);
+          }
+        });
+    }
+  }); 
 }
 
 // this is used later in the resizing and gesture demos
