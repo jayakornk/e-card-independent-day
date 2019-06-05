@@ -67,9 +67,10 @@ interact('.drop-here')
         // related.removeEventListener('mouseleave');
         target.classList.add('dropped-true');
         animateRemoveScale(related);
-        animateAddScale(related, 1.6);
+        animateAddScale(related, 1.3);
         related.classList.add('target-true');
         related.style.pointerEvents = 'none';
+        document.querySelector('.firework').classList.add('firework-animate');
       }
       
       
@@ -78,7 +79,7 @@ interact('.drop-here')
       const related = event.relatedTarget;
       const target = event.currentTarget;
 
-      if (!related.getAttribute('data-true')) {
+      if (!related.getAttribute('data-true') && target) {
         target.classList.remove('activate');
       }
     },
