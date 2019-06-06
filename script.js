@@ -3,7 +3,7 @@
 let startPos = null;
 var parser = new DOMParser();
 
-function animateAddScale(el, scale = 0) {
+function animateAddScale(el, scale = 0.001) {
   const re = /(scale)\((.*)\)/g;
   if (!el.style.transform.match(re)) {
     el.style.transform += 'scale(' + scale + ')';
@@ -30,7 +30,7 @@ interact('.drop-here')
     ondragleave: function (event) {
       const target = event.target;
       const text = target.querySelector('.drop-here-text');
-      
+
       target.classList.remove('activate');
       animateRemoveScale(text);
     },
@@ -69,8 +69,8 @@ interact('.drop-here')
           element.classList.add('hide-not-true');
         });
       }
-      
-      
+
+
     },
     ondropdeactivate: function (event) {
       const related = event.relatedTarget;
@@ -113,7 +113,7 @@ function changeScene(element) {
   resetScene();
   initScene(nextScene);
   document.querySelectorAll('.btn-direction').forEach(function(element){
-     element.dataset.currentScene = nextScene; 
+     element.dataset.currentScene = nextScene;
   })
 }
 
@@ -205,7 +205,7 @@ function loopSVG(currentScene) {
               x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
               y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
             target.style.transition = 'all 0s ease 0s';
-            
+
             // target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
             target.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px)';
             console.log(target.style.transform);
@@ -214,7 +214,7 @@ function loopSVG(currentScene) {
           },
           onend: function(event) {
             event.target.style.transition = event.target.style.transition.replace(/(all 0s ease 0s)/, '');
-    
+
             setTimeout(function() {
               if (!event.relatedTarget || (event.relatedTarget && !event.relatedTarget.classList.contains('drop-here')) && event.target.getAttribute('data-true') === 'true') {
                 const oriX = event.target.getAttribute('data-ori-x');
@@ -223,7 +223,7 @@ function loopSVG(currentScene) {
                 event.target.setAttribute('data-x', oriX);
                 event.target.setAttribute('data-y', oriY);
               }
-    
+
               if (event.target.getAttribute('data-true') !== 'true') {
                 const oriX = event.target.getAttribute('data-ori-x');
                 const oriY = event.target.getAttribute('data-ori-y');
@@ -235,7 +235,7 @@ function loopSVG(currentScene) {
           }
         });
     }
-  }); 
+  });
 }
 
 function reCalImagePosition(arr) {

@@ -201,7 +201,7 @@ img {
     transform: translate(-50%, -50%) scale(1);
   }
   25% {
-    transform: translate(-50%, -50%) scale(0);
+    transform: translate(-50%, -50%) scale(0.001);
   }
   100% {
     transform: translate(-50%, -50%) scale(1.6);
@@ -226,7 +226,7 @@ img {
   top: 50%;
   left: 50%;
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0);
+  transform: translate(-50%, -50%) scale(0.001);
   z-index: 2;
 }
 
@@ -239,7 +239,7 @@ img {
 @keyframes firework-animate {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
+    transform: translate(-50%, -50%) scale(0.001);
   }
   100% {
     opacity: 1;
@@ -254,7 +254,7 @@ img {
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
+    transform: translate(-50%, -50%) scale(0.001);
   }
 }
 
