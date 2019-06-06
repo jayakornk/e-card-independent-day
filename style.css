@@ -24,6 +24,7 @@ h1 {
 body,html {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 * {
   box-sizing: border-box;
@@ -61,9 +62,17 @@ img {
 
 /* Dropzone */
 .container {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+      flex-direction: column;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
   width: 100%;
   max-width: 720px;
-  min-height: 98vh;
+  min-height: calc(98vh - 90px);
   margin: 0 auto;
   position: relative;
 }
@@ -81,6 +90,13 @@ img {
   transition: all 0.3s;
   width: 150px;
   height: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.dragNdrop > img {
+  pointer-events: none;
+  margin: auto;
 }
 
 .animate-drop {
@@ -244,6 +260,7 @@ img {
 
 [id="answer-text"] {
   opacity: 0;
+  text-align: center;
   transform: translateY(10px);
   transition: all .5s .75s;
 }
@@ -255,19 +272,56 @@ img {
 
 .hide-not-true {
   opacity: 0;
+  pointer-events: none;
+}
+
+.changing-scene {
+  animation: changeSceneStep1 .75s, changeSceneStep2 .75s .75s;
+}
+
+.inner-container {
+  margin-top: 45px;
+  transition: .3s;
+}
+
+@keyframes changeSceneStep1 {
+  0% {
+    /* transform: translateX(0); */
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    /* transform: translateX(-100%); */
+    transform: scale(10);
+    opacity: 0;
+  }
+}
+@keyframes changeSceneStep2 {
+  0% {
+    /* transform: translateX(100%); */
+    transform: scale(10);
+    opacity: 0;
+  }
+  100% {
+    /* transform: translateX(0); */
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Footer */
-
 .main-footer {
+  display: -ms-flexbox;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
   text-align: center;
   padding: 5px;
-  position: absolute;
   bottom: 0;
   width: 100%;
+  left: 0;
 }
 .main-footer .footer-logo {
   margin: 5px auto;
@@ -280,10 +334,25 @@ img {
   height: 18px;
   width: auto;
   transition: all .3s;
+  opacity: 1;
+  visibility: visible;
 }
 .btn-direction:hover {
   opacity: .8;
 }
-.btn-direction.back[data-current-scene="0"] {
+.hide-next,
+.btn-direction.back[data-current-scene="0"],
+.btn-direction.next[data-current-scene="4"] {
   visibility: hidden;
+  opacity: 0;
+}
+
+@media (max-width: 767px) {
+  .dragNdrop {
+    width: 115px;
+    height: 115px;
+  }
+  [id="question-text"] {
+    font-size: 25px;
+  }
 }

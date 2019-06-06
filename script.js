@@ -13,6 +13,7 @@ function animateAddScale(el, scale = 0) {
 function animateRemoveScale(el) {
   const re = /(scale)\((.*)\)/g;
   el.style.transform = el.style.transform.replace(re, '');
+  // alert(el.style.transform);
 }
 
 interact('.drop-here')
@@ -40,8 +41,6 @@ interact('.drop-here')
 
       animateAddScale(related);
       animateAddScale(text);
-      
-      
       if (!related.getAttribute('data-true')) {
         related.classList.add('animate-drop');
         target.classList.add('dropped-false');
@@ -65,7 +64,8 @@ interact('.drop-here')
         related.style.pointerEvents = 'none';
         document.querySelector('.firework').classList.add('firework-animate');
         document.querySelector('[id="answer-text"]').classList.add('show-text');
-        document.querySelectorAll('.interactive-container svg:not([data-true])').forEach(function(element) {
+        document.querySelector('.btn-direction.next').classList.remove('hide-next');
+        document.querySelectorAll('.interactive-container .dragNdrop:not([data-true])').forEach(function(element) {
           element.classList.add('hide-not-true');
         });
       }
@@ -81,17 +81,6 @@ interact('.drop-here')
       }
     },
   });
-
-function dragMoveListener (event) {
-  var target = event.target,
-      x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-      y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-    target.style.transition = '0s';
-
-  target.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px)';
-  target.setAttribute('data-x', x);
-  target.setAttribute('data-y', y);
-}
 
 function initScene(scene) {
   const currentSceneKey = 'scene' + scene;
@@ -114,34 +103,71 @@ document.addEventListener('DOMContentLoaded', function() {
 const next = document.querySelector('.btn-direction.next');
 const back = document.querySelector('.btn-direction.back');
 
-next.addEventListener('click', function(e) {
-  let nextScene = parseInt(this.dataset.currentScene) + 1;
+function changeScene(element) {
+  document.querySelector('.inner-container').classList.add('changing-scene');
+  setTimeout(function() {
+    document.querySelector('.inner-container').classList.remove('changing-scene');
+  }, 1500);
+  const multiplier = element.classList.contains('back') ? -1 : 1;
+  const nextScene = parseInt(element.dataset.currentScene) + (1 * multiplier) ;
+  resetScene();
   initScene(nextScene);
-  this.dataset.currentScene = nextScene;
-  back.dataset.currentScene = nextScene;
+  document.querySelectorAll('.btn-direction').forEach(function(element){
+     element.dataset.currentScene = nextScene; 
+  })
+}
+
+function resetScene() {
+  document.querySelectorAll('.dragNdrop').forEach(function(child) {
+    const parent = child.parentNode;
+    parent.removeChild(child);
+  });
+  document.querySelector('.firework').classList.remove('firework-animate');
+  const dropHere = document.querySelector('.drop-here');
+  dropHere.className = '';
+  dropHere.classList.add('drop-here');
+  const dropHereText = document.querySelector('.drop-here-text');
+  dropHereText.style.transform = 'translateY(-50%)';
+  dropHereText.innerHTML = 'Drop Here!';
+  document.querySelector('.btn-direction.next').classList.add('hide-next');
+  document.querySelector('#answer-text').classList.remove('show-text');
+}
+
+next.addEventListener('click', function(e) {
+  changeScene(this);
 });
 
 back.addEventListener('click', function(e) {
-  let nextScene = parseInt(this.dataset.currentScene) - 1;
-  initScene(nextScene);
-  this.dataset.currentScene = nextScene;
-  next.dataset.currentScene = nextScene;
+  changeScene(this);
 });
 
 function loopSVG(currentScene) {
-  const arr = [
+  let arr = [
     {x: '-150', y: '-120'},
     {x: '150', y: '-120'},
     {x: '-150', y: '120'},
     {x: '150', y: '120'},
   ];
+  if (window.innerWidth <= 767) {
+    arr = [
+      {x: '-100', y: '-100'},
+      {x: '100', y: '-100'},
+      {x: '-100', y: '100'},
+      {x: '100', y: '100'},
+    ];
+  }
   Object.keys(currentScene).forEach((key, index) => {
     if ( key !== 'q' && key !== 'a') {
       const container = document.querySelector('.interactive-container');
       const dropzone = document.querySelector('.drop-here');
 
       let el = currentScene[key];
-      el = parser.parseFromString(el, "image/svg+xml").documentElement;
+      el = document.createElement('img');
+      el.setAttribute('src', currentScene[key]);
+      const div = document.createElement('div');
+      div.appendChild(el);
+      el = div;
+      // el = parser.parseFromString(el, "image/svg+xml").documentElement;
       el.classList.add('dragNdrop');
 
       el.style.transform = 'translate(calc(-50% + ' + arr[index].x + 'px), calc(-50% + ' + arr[index].y + 'px))';
@@ -160,31 +186,32 @@ function loopSVG(currentScene) {
       el.addEventListener('mouseleave', function(event) {
         animateRemoveScale(el);
       });
+      // el.addEventListener('touchstart', function(event) {
+      //   event.target.style.transition = '0s';
+      // });
+      // el.addEventListener('touchend', function(event) {
+      //   event.target.style.transition = event.target.style.transition.replace(/(0s)/, '');
+      // });
 
       container.appendChild(el);
+      const innerCont = document.querySelector('.interactive-container');
 
       interact(el)
         .draggable({
           inertia: true,
-          snap: {
-            targets: [
-              {
-                x: container.offsetLeft + dropzone.offsetLeft,
-                y: container.offsetTop + dropzone.offsetTop,
-                range: 100,
-              },
-              {
-                x: arr[index].x,
-                y: arr[index].y,
-                range: Infinity,
-              },
-            ],
-            relativePoints: [
-              { x: 0.5, y: 0.5 },
-            ],
-            endOnly: true,
+          autoScroll: true,
+          onmove: function(event) {
+            var target = event.target,
+              x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+              y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+            target.style.transition = 'all 0s ease 0s';
+            
+            // target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+            target.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px)';
+            console.log(target.style.transform);
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
           },
-          onmove: dragMoveListener,
           onend: function(event) {
             event.target.style.transition = event.target.style.transition.replace(/(all 0s ease 0s)/, '');
     
@@ -211,5 +238,34 @@ function loopSVG(currentScene) {
   }); 
 }
 
+function reCalImagePosition(arr) {
+  const dragNdrops = document.querySelectorAll('.dragNdrop');
+  dragNdrops.forEach(function(el, index) {
+    el.style.transform = 'translate(calc(-50% + ' + arr[index].x + 'px), calc(-50% + ' + arr[index].y + 'px))';
+    el.setAttribute('data-x', arr[index].x);
+    el.setAttribute('data-y', arr[index].y);
+    el.setAttribute('data-ori-x', arr[index].x);
+    el.setAttribute('data-ori-y', arr[index].y);
+  });
+}
+
+window.addEventListener('resize', function() {
+  let arr = [
+    {x: '-150', y: '-120'},
+    {x: '150', y: '-120'},
+    {x: '-150', y: '120'},
+    {x: '150', y: '120'},
+  ];
+  if (window.innerWidth <= 767 ) {
+    arr = [
+      {x: '-100', y: '-100'},
+      {x: '100', y: '-100'},
+      {x: '-100', y: '100'},
+      {x: '100', y: '100'},
+    ];
+  }
+  reCalImagePosition(arr);
+});
+
 // this is used later in the resizing and gesture demos
-window.dragMoveListener = dragMoveListener;
+// window.dragMoveListener = dragMoveListener;

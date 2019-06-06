@@ -18,16 +18,18 @@
       </div>
     </header>
     <div class="container">
-      <h1 id="question-text" class="text-center"></h1>
-      <div class="interactive-container">
-        <img class="firework" src="img/firework.svg">
-        <div class="drop-here"><strong class="drop-here-text" style="transform: translateY(-50%);">Drop Here!</strong></div>
+      <div class="inner-container">
+        <h1 id="question-text" class="text-center"></h1>
+        <div class="interactive-container">
+          <img class="firework" src="img/firework.svg">
+          <div class="drop-here"><strong class="drop-here-text" style="transform: translateY(-50%);">Drop Here!</strong></div>
+        </div>
+        <p id="answer-text"></p>
       </div>
-      <p id="answer-text" class="text-center"></p>
       <footer class="main-footer">
         <img src="img/btn-back.svg" class="btn-direction back" data-current-scene="0">
         <img src="img/logo.svg" class="footer-logo">
-        <img src="img/btn-next.svg" class="btn-direction next" data-current-scene="0">
+        <img src="img/btn-next.svg" class="btn-direction next hide-next" data-current-scene="0">
       </footer>
     </div>
     <script
@@ -36,8 +38,7 @@
     crossorigin="anonymous"
     ></script>
     <script src="svg.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenMax.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script src="interact.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
