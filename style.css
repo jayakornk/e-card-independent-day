@@ -82,6 +82,38 @@ img {
   height: 380px;
 }
 
+.drop-here-wrapper {
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  transition: .3s;
+  text-align: center;
+}
+
+.drop-here {
+  background-color: #1C5295;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.drop-here-text {
+  color: #fff;
+  font-family: 'Barlow', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transition: .3s;
+}
+
 .dragNdrop {
   position: absolute;
   top: 50%;
@@ -99,54 +131,39 @@ img {
   margin: auto;
 }
 
-.animate-drop {
-  transition: all 0.3s;
-  animation: drop .3s;
-}
-
-@keyframes drop {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.drop-here {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #1C5295;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  transition: .3s;
-  text-align: center;
-}
-
-.drop-here-text {
-  color: #fff;
-  font-family: 'Barlow', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  text-transform: uppercase;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transition: .3s;
-}
-
 .activate {
-  background-color: #CF1D1D;
   transform: translate(-50%, -50%) scale(1.53);
+  /* transform: translate(-50%, -50%); */
+}
+
+.activate .drop-here {
+  background-color: #CF1D1D;
+}
+
+/* iPhone|iPad|iPod */
+[data-platform*='iPhone'].activate,
+[data-platform*='iPad'].activate,
+[data-platform*='iPod'].activate {
+  transform: translate(-50%, -50%) scale(1) !important;
+  transition: 0s;
+}
+
+[data-platform*='iPhone'] .drop-here,
+[data-platform*='iPad'] .drop-here,
+[data-platform*='iPod'] .drop-here {
+  transition: all .3s;
+}
+
+[data-platform*='iPhone'].activate .drop-here, 
+[data-platform*='iPad'].activate .drop-here, 
+[data-platform*='iPod'].activate .drop-here {
+  transform: scale(1.53);
 }
 
 .dropped-false {
-  animation-name: dropped-false;
-  animation-duration: .75s;
+  animation: dropped-false .75s;
+  /* animation-name: dropped-false;
+  animation-duration: .75s; */
 }
 
 @keyframes dropped-false {

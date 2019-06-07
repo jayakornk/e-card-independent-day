@@ -1,8 +1,3 @@
-/* The dragging code for '.draggable' from the demo above
- * applies to this demo as well so it doesn't have to be repeated. */
-let startPos = null;
-var parser = new DOMParser();
-
 function animateAddScale(el, scale = 0.001) {
   const re = /(scale)\((.*)\)/g;
   if (!el.style.transform.match(re)) {
@@ -13,69 +8,95 @@ function animateAddScale(el, scale = 0.001) {
 function animateRemoveScale(el) {
   const re = /(scale)\((.*)\)/g;
   el.style.transform = el.style.transform.replace(re, '');
-  // alert(el.style.transform);
 }
 
-interact('.drop-here')
+document.querySelector('.drop-here-wrapper').addEventListener('animationend', function(e) {
+  e.target.classList.remove('dropped-false');
+  e.target.classList.remove('dropped-true');
+});
+
+document.querySelector('.drop-here-wrapper').setAttribute('data-platform',  navigator.userAgent);
+
+interact('.drop-here-wrapper')
   .dropzone({
     accept: '.dragNdrop',
     overlap: 0.65,
     ondragenter: function (event) {
       const target = event.target;
+      const dropHere = document.querySelector('.drop-here');
       const text = target.querySelector('.drop-here-text');
-
+      
       target.classList.add('activate');
       animateAddScale(text);
+
+      if( /iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
+        dropHere.style.transform = 'scale(1.53)';
+      }
     },
     ondragleave: function (event) {
+      const dropHere = document.querySelector('.drop-here');
       const target = event.target;
       const text = target.querySelector('.drop-here-text');
 
       target.classList.remove('activate');
       animateRemoveScale(text);
+      
+      if( /iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
+        dropHere.style.transform = 'scale(1)';
+      }
     },
     ondrop: function (event) {
+      const dropHere = document.querySelector('.drop-here');
       const related = event.relatedTarget;
       const target = event.currentTarget;
       const text = target.querySelector('.drop-here-text');
 
+      dropHere.style.transition = 'all 0s ease 0s'; // might have to move somewhere for true answer
+      
+      target.classList.add('activate');
       animateAddScale(related);
       animateAddScale(text);
-      if (!related.getAttribute('data-true')) {
-        related.classList.add('animate-drop');
-        target.classList.add('dropped-false');
-        text.innerHTML = 'Try Again!';
-        setTimeout(function() {
-          animateRemoveScale(related);
-          animateRemoveScale(text);
-        }, 300);
-        setTimeout(function() {
-          related.classList.remove('animate-drop');
-          target.classList.remove('dropped-false');
-          target.classList.remove('dropped-true');
-        }, 1050);
+      if( !/iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
+        if (!related.getAttribute('data-true')) {
+          target.classList.add('dropped-false');
+          text.innerHTML = 'Try Again!';
+          setTimeout(function() {
+            animateRemoveScale(related);
+            animateRemoveScale(text);
+          }, 300);
+        } else {
+          target.classList.add('dropped-true');
+          related.classList.add('target-true');
+          related.style.pointerEvents = 'none';
+          document.querySelector('.firework').classList.add('firework-animate');
+          document.querySelector('[id="answer-text"]').classList.add('show-text');
+          document.querySelector('.btn-direction.next').classList.remove('hide-next');
+          document.querySelectorAll('.interactive-container .dragNdrop:not([data-true])').forEach(function(element) {
+            element.classList.add('hide-not-true');
+          });
+        }
       } else {
-        // related.removeEventListener('mouseover');
-        // related.removeEventListener('mouseleave');
-        target.classList.add('dropped-true');
-        animateRemoveScale(related);
-        animateAddScale(related, 1.3);
-        related.classList.add('target-true');
-        related.style.pointerEvents = 'none';
-        document.querySelector('.firework').classList.add('firework-animate');
-        document.querySelector('[id="answer-text"]').classList.add('show-text');
-        document.querySelector('.btn-direction.next').classList.remove('hide-next');
-        document.querySelectorAll('.interactive-container .dragNdrop:not([data-true])').forEach(function(element) {
-          element.classList.add('hide-not-true');
-        });
+        if (!related.getAttribute('data-true')) {
+          text.innerHTML = 'Try Again!';
+          anime({
+            targets: '.drop-here',
+            scale: ['1.53', '1' ,'1.3', '1'],
+            duration: 600,
+            easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
+            complete: function() {
+              dropHere.style.transition = '';
+              animateRemoveScale(text);
+            }
+          });
+        } else {
+          // To be continue
+        }
       }
-
-
+      
     },
     ondropdeactivate: function (event) {
       const related = event.relatedTarget;
       const target = event.currentTarget;
-
       if (!related.getAttribute('data-true') && target) {
         target.classList.remove('activate');
       }
@@ -123,9 +144,9 @@ function resetScene() {
     parent.removeChild(child);
   });
   document.querySelector('.firework').classList.remove('firework-animate');
-  const dropHere = document.querySelector('.drop-here');
+  const dropHere = document.querySelector('.drop-here-wrapper');
   dropHere.className = '';
-  dropHere.classList.add('drop-here');
+  dropHere.classList.add('drop-here-wrapper');
   const dropHereText = document.querySelector('.drop-here-text');
   dropHereText.style.transform = 'translateY(-50%)';
   dropHereText.innerHTML = 'Drop Here!';
@@ -159,7 +180,7 @@ function loopSVG(currentScene) {
   Object.keys(currentScene).forEach((key, index) => {
     if ( key !== 'q' && key !== 'a') {
       const container = document.querySelector('.interactive-container');
-      const dropzone = document.querySelector('.drop-here');
+      const dropzone = document.querySelector('.drop-here-wrapper');
 
       let el = currentScene[key];
       el = document.createElement('img');
@@ -167,7 +188,6 @@ function loopSVG(currentScene) {
       const div = document.createElement('div');
       div.appendChild(el);
       el = div;
-      // el = parser.parseFromString(el, "image/svg+xml").documentElement;
       el.classList.add('dragNdrop');
 
       el.style.transform = 'translate(calc(-50% + ' + arr[index].x + 'px), calc(-50% + ' + arr[index].y + 'px))';
@@ -186,12 +206,6 @@ function loopSVG(currentScene) {
       el.addEventListener('mouseleave', function(event) {
         animateRemoveScale(el);
       });
-      // el.addEventListener('touchstart', function(event) {
-      //   event.target.style.transition = '0s';
-      // });
-      // el.addEventListener('touchend', function(event) {
-      //   event.target.style.transition = event.target.style.transition.replace(/(0s)/, '');
-      // });
 
       container.appendChild(el);
       const innerCont = document.querySelector('.interactive-container');
@@ -206,9 +220,7 @@ function loopSVG(currentScene) {
               y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
             target.style.transition = 'all 0s ease 0s';
 
-            // target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
             target.style.transform = 'translate(calc(-50% + ' + x + 'px), calc(-50% + ' + y + 'px)';
-            console.log(target.style.transform);
             target.setAttribute('data-x', x);
             target.setAttribute('data-y', y);
           },
@@ -216,21 +228,11 @@ function loopSVG(currentScene) {
             event.target.style.transition = event.target.style.transition.replace(/(all 0s ease 0s)/, '');
 
             setTimeout(function() {
-              if (!event.relatedTarget || (event.relatedTarget && !event.relatedTarget.classList.contains('drop-here')) && event.target.getAttribute('data-true') === 'true') {
-                const oriX = event.target.getAttribute('data-ori-x');
-                const oriY = event.target.getAttribute('data-ori-y');
-                event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
-                event.target.setAttribute('data-x', oriX);
-                event.target.setAttribute('data-y', oriY);
-              }
-
-              if (event.target.getAttribute('data-true') !== 'true') {
-                const oriX = event.target.getAttribute('data-ori-x');
-                const oriY = event.target.getAttribute('data-ori-y');
-                event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
-                event.target.setAttribute('data-x', oriX);
-                event.target.setAttribute('data-y', oriY);
-              }
+              const oriX = event.target.getAttribute('data-ori-x');
+              const oriY = event.target.getAttribute('data-ori-y');
+              event.target.style.transform = 'translate(calc(-50% + ' + oriX + 'px), calc(-50% + ' + oriY + 'px))';
+              event.target.setAttribute('data-x', oriX);
+              event.target.setAttribute('data-y', oriY);
             }, 320);
           }
         });
@@ -266,6 +268,3 @@ window.addEventListener('resize', function() {
   }
   reCalImagePosition(arr);
 });
-
-// this is used later in the resizing and gesture demos
-// window.dragMoveListener = dragMoveListener;

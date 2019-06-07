@@ -22,7 +22,9 @@
         <h1 id="question-text" class="text-center"></h1>
         <div class="interactive-container">
           <img class="firework" src="img/firework.svg">
-          <div class="drop-here"><strong class="drop-here-text" style="transform: translateY(-50%);">Drop Here!</strong></div>
+          <div class="drop-here-wrapper">
+            <div class="drop-here"><strong class="drop-here-text" style="transform: translateY(-50%);">Drop Here!</strong></div>
+          </div>
         </div>
         <p id="answer-text"></p>
       </div>
@@ -38,6 +40,7 @@
     crossorigin="anonymous"
     ></script>
     <script src="svg.js"></script>
+    <script src="anime.min.js"></script>
     <script src="interact.min.js"></script>
     <script src="script.js"></script>
   </body>
