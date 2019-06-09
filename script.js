@@ -61,6 +61,15 @@ interact('.drop-here-wrapper').dropzone({
     target.classList.add('activate');
     animateAddScale(related);
     animateAddScale(text);
+
+    if (related.getAttribute('data-true')) {
+      const trueElement = document.querySelector('[data-true] > img');
+      trueElement.style.transform = 'rotate(0)';
+      anime.remove(trueElement);
+
+      trueElement.removeEventListener('mouseover', pauseAnime);
+      trueElement.removeEventListener('mouseout', playAnime);
+    }
     if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       if (!related.getAttribute('data-true')) {
         target.classList.add('dropped-false');
@@ -174,19 +183,24 @@ const next = document.querySelector('.btn-direction.next');
 const back = document.querySelector('.btn-direction.back');
 
 function changeScene(element) {
-  document.querySelector('.inner-container').classList.add('changing-scene');
-  setTimeout(function() {
-    document
-      .querySelector('.inner-container')
-      .classList.remove('changing-scene');
-  }, 1500);
-  const multiplier = element.classList.contains('back') ? -1 : 1;
-  const nextScene = parseInt(element.dataset.currentScene) + 1 * multiplier;
-  resetScene();
-  initScene(nextScene);
-  document.querySelectorAll('.btn-direction').forEach(function(element) {
-    element.dataset.currentScene = nextScene;
-  });
+  console.log(element.dataset.currentScene);
+  if (element.dataset.currentScene !== '4') {
+    document.querySelector('.inner-container').classList.add('changing-scene');
+    setTimeout(function() {
+      document
+        .querySelector('.inner-container')
+        .classList.remove('changing-scene');
+    }, 1500);
+    const multiplier = element.classList.contains('back') ? -1 : 1;
+    const nextScene = parseInt(element.dataset.currentScene) + 1 * multiplier;
+    resetScene();
+    initScene(nextScene);
+    document.querySelectorAll('.btn-direction').forEach(function(element) {
+      element.dataset.currentScene = nextScene;
+    });
+  } else {
+    document.querySelector('.final-scene').classList.add('current');
+  }
 }
 
 function resetScene() {
@@ -212,6 +226,19 @@ next.addEventListener('click', function() {
 back.addEventListener('click', function() {
   changeScene(this);
 });
+
+document.querySelector('.btn-play-again').addEventListener('click', function() {
+  document.querySelector('.final-scene').classList.remove('current');
+  changeScene(this);
+});
+
+function playAnime(animation) {
+  animation.play();
+}
+
+function pauseAnime(animation) {
+  animation.pause();
+}
 
 function loopSVG(currentScene) {
   let arr = [
@@ -258,6 +285,22 @@ function loopSVG(currentScene) {
       });
 
       container.appendChild(el);
+
+      const dragNdrop = document.querySelectorAll('.dragNdrop > img');
+
+      dragNdrop.forEach(function(ele) {
+        const animation = anime({
+          targets: ele,
+          rotate: [0, -15, 0],
+          duration: 1000,
+          delay: Math.random() * (750 - 250) + 250,
+          easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
+          loop: true,
+        });
+
+        ele.parentElement.addEventListener('mouseover', pauseAnime(animation));
+        ele.parentElement.addEventListener('mouseout', playAnime(animation));
+      });
 
       interact(el).draggable({
         inertia: true,
