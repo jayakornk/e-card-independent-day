@@ -82,9 +82,9 @@ img {
   justify-content: space-between;
   width: 100%;
   /* max-width: 720px; */
-  min-height: calc(98vh - 90px);
+  min-height: calc(100% - 90px);
   margin: 0 auto;
-  position: relative;
+  position: absolute;
   overflow: hidden;
 }
 
@@ -94,30 +94,44 @@ img {
   max-width: 720px;
 }
 
+.inner-container p,
+.inner-container h1 {
+  position: relative;
+  z-index: 99;
+}
+
 .interactive-container {
   position: relative;
   height: 380px;
 }
 
 .container.final-scene {
-  background-color: #fff;
   text-align: center;
   position: absolute;
-  top: 0;
   left: 0;
   right: 0;
   visibility: hidden;
   opacity: 0;
   transition: 0.3s;
-  height: 100%;
+  /* height: calc(100% - 90px); */
   z-index: 99;
-  margin-top: 90px;
 }
 
 .container.final-scene.current {
   visibility: visible;
   opacity: 1;
 }
+
+.container.final-scene.current ~ div {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* .container.final-scene .inner-container {
+  position: absolute;
+  top: 0;
+  background-color: #fff;
+} */
 
 .final-scene h1 {
   font-size: 30px;
@@ -132,7 +146,16 @@ img {
 }
 
 .final-scene img {
-  margin: 0 auto;
+  margin: 20px auto;
+}
+
+.btn-play-again {
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-play-again:hover {
+  opacity: .8;
 }
 
 .drop-here-wrapper {
@@ -152,6 +175,24 @@ img {
   width: 150px;
   height: 150px;
   border-radius: 50%;
+}
+
+.drop-here::before,
+.drop-here::after {
+  content: '';
+  width: 270px;
+  height: 270px;
+  border-radius: 50%;
+  border: 1px solid #eee;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.drop-here::after {
+  width: 390px;
+  height: 390px;
 }
 
 .drop-here-text {
@@ -176,6 +217,11 @@ img {
   width: 150px;
   height: auto;
   touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 
@@ -196,20 +242,23 @@ img {
 /* iPhone|iPad|iPod */
 [data-platform*='iPhone'] .activate,
 [data-platform*='iPad'] .activate,
-[data-platform*='iPod'] .activate {
+[data-platform*='iPod'] .activate,
+[data-platform*='Firefox'] .activate {
   transform: translate(-50%, -50%) scale(1) !important;
   transition: 0s;
 }
 
 [data-platform*='iPhone'] .drop-here,
 [data-platform*='iPad'] .drop-here,
-[data-platform*='iPod'] .drop-here {
+[data-platform*='iPod'] .drop-here,
+[data-platform*='Firefox'] .drop-here {
   transition: all 0.3s;
 }
 
 [data-platform*='iPhone'] .activate .drop-here,
 [data-platform*='iPad'] .activate .drop-here,
-[data-platform*='iPod'] .activate .drop-here {
+[data-platform*='iPod'] .activate .drop-here,
+[data-platform*='Firefox'] .activate .drop-here {
   transform: scale(1.53);
 }
 
@@ -268,7 +317,8 @@ img {
 
 [data-platform*='iPhone'] .target-true,
 [data-platform*='iPad'] .target-true,
-[data-platform*='iPod'] .target-true {
+[data-platform*='iPod'] .target-true,
+[data-platform*='Firefox'] .target-true {
   animation: none !important;
   transform: translate(-50%, -50%) !important;
 }
@@ -424,7 +474,38 @@ img {
     width: 115px;
     height: 115px;
   }
+
   [id='question-text'] {
     font-size: 25px;
   }
+
+  .inner-container {
+    padding: 0 20px;
+  }
+
+  .drop-here::before {
+    width: 210px;
+    height: 210px;
+  }
+
+  .drop-here::after {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Final Scene */
+  .final-scene h2 {
+    font-size: 22px;
+    padding: 0 35px;
+  }
+
+  /* .container.final-scene {
+    height: 100%;
+    top: 80px;
+  } */
+
+  /* .container.final-scene .inner-container {
+    top: 50%;
+    transform: translateY(-50%);
+  } */
 }

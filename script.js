@@ -34,7 +34,7 @@ interact('.drop-here-wrapper').dropzone({
     target.classList.add('activate');
     animateAddScale(text);
 
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    if (/iPhone|iPad|iPod|Firefox/i.test(navigator.userAgent)) {
       dropHere.style.transform = 'scale(1.53)';
     }
   },
@@ -46,7 +46,7 @@ interact('.drop-here-wrapper').dropzone({
     target.classList.remove('activate');
     animateRemoveScale(text);
 
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    if (/iPhone|iPad|iPod|Firefox/i.test(navigator.userAgent)) {
       dropHere.style.transform = 'scale(1)';
     }
   },
@@ -70,7 +70,7 @@ interact('.drop-here-wrapper').dropzone({
       trueElement.removeEventListener('mouseover', pauseAnime);
       trueElement.removeEventListener('mouseout', playAnime);
     }
-    if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    if (!/iPhone|iPad|iPod|Firefox/i.test(navigator.userAgent)) {
       if (!related.getAttribute('data-true')) {
         target.classList.add('dropped-false');
         text.innerHTML = 'Try Again!';
@@ -177,6 +177,13 @@ function initScene(scene) {
 // Init
 document.addEventListener('DOMContentLoaded', function() {
   initScene(0);
+
+  const headerHeight = document.querySelector('.main-header').offsetHeight;
+  const containers = document.querySelectorAll('.container');
+
+  containers.forEach(function(container) {
+    container.style.minHeight = window.innerHeight - headerHeight + 'px';
+  });
 });
 
 const next = document.querySelector('.btn-direction.next');
@@ -185,11 +192,10 @@ const back = document.querySelector('.btn-direction.back');
 function changeScene(element) {
   console.log(element.dataset.currentScene);
   if (element.dataset.currentScene !== '4') {
-    document.querySelector('.inner-container').classList.add('changing-scene');
+    const innerContainer = document.querySelector('.container:not(.final-scene) .inner-container');
+    innerContainer.classList.add('changing-scene');
     setTimeout(function() {
-      document
-        .querySelector('.inner-container')
-        .classList.remove('changing-scene');
+      innerContainer.classList.remove('changing-scene');
     }, 1500);
     const multiplier = element.classList.contains('back') ? -1 : 1;
     const nextScene = parseInt(element.dataset.currentScene) + 1 * multiplier;
