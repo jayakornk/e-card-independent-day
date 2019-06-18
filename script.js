@@ -196,11 +196,13 @@ function changeScene(element) {
     innerContainer.classList.add('changing-scene');
     setTimeout(function() {
       innerContainer.classList.remove('changing-scene');
-    }, 1500);
+    }, 750);
     const multiplier = element.classList.contains('back') ? -1 : 1;
     const nextScene = parseInt(element.dataset.currentScene) + 1 * multiplier;
     resetScene();
-    initScene(nextScene);
+    setTimeout(function() {
+      initScene(nextScene);
+    }, 750);
     document.querySelectorAll('.btn-direction').forEach(function(element) {
       element.dataset.currentScene = nextScene;
     });
