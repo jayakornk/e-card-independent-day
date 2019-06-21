@@ -22,7 +22,7 @@ const scenes = {
     f2: 'img/scenes/outdoor-act-03.png',
     f3: 'img/scenes/outdoor-act-04.png',
     q: 'Bristol, Rhode Island has this enduring Fourth of July tradition.',
-    a: 'America’s oldest ceremony is the Military, Civic, and Fireman’s Parade of Bristol, dating back to 1785',
+    a: 'America’s oldest ceremony is the Military, Civic, and Fireman’s Parade of Bristol, dating back to 1785.',
   },
   scene3: {
     f1: 'img/scenes/beach-act-01.png',
